@@ -1,0 +1,14 @@
+{
+  "name": "promises_async",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "callbacks": "node callbacks.js",
+    "promises": "node promises.js",
+    "await": "node await.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrew Park",
+  "license": "ISC"
+}
