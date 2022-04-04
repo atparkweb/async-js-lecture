@@ -46,7 +46,7 @@ function drink(coffee) {
 
 function makeCoffeeWithPromise() {
   boilWater()
-    .then((hotWater) => {
+    .then(hotWater => {
       console.log(hotWater);
       return grind();
     })
