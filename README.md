@@ -2,9 +2,9 @@
 
 This is some code that uses different asynchronous forms of JavaScript:
 
-- Callbacks
-- Promises
-- Async/Await
+- Callbacks: `callbacks.js`
+- Promises: `promises.js`
+- Await: `await.js`
 
 ## Running Scripts:
 
