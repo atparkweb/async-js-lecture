@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node scratch.js",
     "callbacks": "node callbacks.js",
     "promises": "node promises.js",
     "await": "node await.js",
