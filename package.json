@@ -4,11 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node scratch.js",
-    "callbacks": "node callbacks.js",
-    "promises": "node promises.js",
-    "await": "node await.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "callbacks": "node ./src/callbacks.js",
+    "promises": "node ./src/promises.js",
+    "await": "node ./src/await.js"
   },
   "author": "Andrew Park",
   "license": "ISC"
