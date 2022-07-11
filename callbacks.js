@@ -1,6 +1,3 @@
-const log = console.log;
-
-// Try changing this to `false` to see how async errors are handled
 const state = {
   coffeeGrinderWorks: true,
   isWaterBoiled: false,
@@ -11,8 +8,9 @@ const state = {
 function boilWater(onComplete) {
   const time = 2000; // 2 seconds
 
-  log("⏳ Step 1: Boil water");
-  setTimeout(() => { // this will run after 2 seconds
+  console.log("⏳ Step 1: Boil water");
+  setTimeout(() => {
+    // this will run after 2 seconds
     console.log("✅ Done boiling");
     onComplete();
     //state.isWaterBoiled = true;
@@ -23,12 +21,13 @@ function grindCoffee(onComplete) {
   log("⏳ Step 2: Grind coffee");
 
   if (state.coffeeGrinderWorks) {
-    const time = 2000; // 2 seconds
+    const time = 1000; // 1 second
 
-    setTimeout(() => { // This will run after 2 seconds
+    setTimeout(() => {
+      // This will run after 1 second
       console.log("✅ Ground coffee");
       onComplete();
-      //state.isCoffeeGround = true;
+      state.isCoffeeGround = true;
     }, time);
   } else {
     throw new Error("❌ Coffee grinder is broken!");
@@ -40,13 +39,15 @@ function brewCoffee(onComplete) {
     throw new Error("Can't brew coffee without grounds and hot water.")
   }
 
-  const time = 4000; // four seconds
+  const time = 4000; // 4 seconds
 
   log("⏳ Step 3: Brew coffee");
 
-  setTimeout(() => { // This will run after 4 seconds
+  setTimeout(() => {
+    // This will run after 4 seconds
     console.log(`✅ Brewed with ground coffee`);
     onComplete();
+    state.isCoffeeBrewed = true;
   }, time);
 }
 
@@ -56,25 +57,34 @@ function drinkCoffee() {
 
 
 /**
- * This is callback hell. Nested callbacks are a
- * way to control the order of async code.
+ * This is callback hell. 
+ * Nested callbacks control the order of async code, but it's ugly.
+ * Handling errors is kind of a mess
  */
- function makeCoffeeWithCallbacks() {
+ function start() {
     boilWater(() => {
       try {
         grindCoffee(() => {
           try {
             brewCoffee(() => {
-              drinkCoffee();
+              try {
+                drinkCoffee();
+              } catch (err) {
+                handleError(err);
+              }
             });
           } catch (err) {
-            console.log(err.message);
+            handleError(err);
           }
         });
       } catch (err) {
-        console.log(err.message);
+        handleError(err);
       }
     });
 }
 
-makeCoffeeWithCallbacks();
+function handleError(err) {
+  console.log(err.message);
+}
+
+start();
