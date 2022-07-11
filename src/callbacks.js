@@ -1,3 +1,6 @@
+const logger = require('./lib/logger');
+const { WAIT, OK, ERROR } = logger.statuses
+
 const state = {
   coffeeGrinderWorks: true,
   isWaterBoiled: false,
@@ -8,29 +11,29 @@ const state = {
 function boilWater(onComplete) {
   const time = 2000; // 2 seconds
 
-  console.log("⏳ Step 1: Boil water");
+  logger.log("Step 1: Boil water", WAIT);
   setTimeout(() => {
     // this will run after 2 seconds
-    console.log("✅ Done boiling");
+    logger.log("Done boiling", OK);
     onComplete();
     //state.isWaterBoiled = true;
   }, time);
 }
 
 function grindCoffee(onComplete) {
-  log("⏳ Step 2: Grind coffee");
+  logger.log("Step 2: Grind coffee", WAIT);
 
   if (state.coffeeGrinderWorks) {
     const time = 1000; // 1 second
 
     setTimeout(() => {
       // This will run after 1 second
-      console.log("✅ Ground coffee");
+      logger.log("Ground coffee", OK);
       onComplete();
       state.isCoffeeGround = true;
     }, time);
   } else {
-    throw new Error("❌ Coffee grinder is broken!");
+    throw new Error("Coffee grinder is broken!");
   }
 }
 
@@ -41,18 +44,18 @@ function brewCoffee(onComplete) {
 
   const time = 4000; // 4 seconds
 
-  log("⏳ Step 3: Brew coffee");
+  logger.log("Step 3: Brew coffee", WAIT);
 
   setTimeout(() => {
     // This will run after 4 seconds
-    console.log(`✅ Brewed with ground coffee`);
+    logger.log("Brewed with ground coffee", OK);
     onComplete();
     state.isCoffeeBrewed = true;
   }, time);
 }
 
 function drinkCoffee() {
-  log("🎉 Step 4: Drinking coffee. Delicious!");
+  logger.log("Step 4: Drinking coffee. Delicious!", OK);
 }
 
 
@@ -84,7 +87,7 @@ function drinkCoffee() {
 }
 
 function handleError(err) {
-  console.log(err.message);
+  logger.log(err.message, ERROR);
 }
 
 start();
