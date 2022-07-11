@@ -6,8 +6,12 @@
   "scripts": {
     "callbacks": "node ./src/callbacks.js",
     "promises": "node ./src/promises.js",
-    "await": "node ./src/await.js"
+    "await": "node ./src/await.js",
+    "test": "mocha"
   },
   "author": "Andrew Park",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.3.6"
+  }
 }
