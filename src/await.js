@@ -1,7 +1,4 @@
-const log = console.log;
 
-// Try changing this to `false` to see how async errors are handled
-const coffeeGrinderWorks = false;
 
 function boilWater() {
   return new Promise((resolve, reject) => {
