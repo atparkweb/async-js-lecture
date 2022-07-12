@@ -1,62 +1,70 @@
-
+const logger = require('./lib/logger');
+const state = require('./state');
 
 function boilWater() {
+  const time = 2000; // 2 seconds
+
   return new Promise((resolve, reject) => {
     // Promise is PENDING
-    log("Step 1: Boil water");
+    logger.pending("Step 1: Boil water");
+
     setTimeout(() => {
-      console.log("Done boiling");
+      logger.success("Done boiling");
       resolve(true); // Promise is RESOLVED
-    }, 2000); // resolve after 2 seconds
+    }, time);
   });
 }
 
 function grindCoffee() {
-  log("Step 2: Grind coffee");
+  const time = 2000; // 2 seconds
+
   return new Promise((resolve, reject) => {
     // Promise is PENDING
-    if (coffeeGrinderWorks) {
+    logger.pending("Step 2: Grind coffee");
+
+    if (state.coffeeGrinderWorks) {
       setTimeout(() => {
-        console.log("Ground coffee");
+        logger.success("Ground coffee");
         resolve(true); // Promise is RESOLVED
-      }, 2000); // resolve after 2 seconds
+      }, time); // resolve after 2 seconds
     } else {
-      reject("Coffee grinder is broken!"); // Promise is REJECTED
+      reject(false); // Promise is REJECTED
     }
   });
 }
 
 function brewCoffee(groundCoffee) {
-  log("Step 3: Brew coffee");
+  const time = 4000; // 4 seconds
+
   return new Promise((resolve, reject) => {
     // Promise is PENDING
+    logger.pending("Step 3: Brew coffee");
+
     setTimeout(() => {
-      console.log(`Brewed coffee with ${groundCoffee}`);
+      logger.success(`Brewed coffee with ${groundCoffee}`);
       resolve(true); // Promise is RESOLVED
-    }, 4000); // resolve after 2 seconds
+    }, time);
   });
 }
 
 function drinkCoffee(coffee) {
-  log(`Step 4: Drinking ${coffee}. Delicious!`);
+  logger.success(`Step 4: Drinking ${coffee}. Delicious!`);
 }
 
 /**
- * This version uses a Promise chain to guarantee
- * the order of async function execution
- * using .then
+ * This version uses async/await to make async code look synchronous
  */
 async function start() {
   try {
     const boilResult = await boilWater();
-    console.log(boilResult);
+    state.isWaterBoiled = boilResult;
     const grindResult = await grindCoffee();
-    console.log(grindResult);
+    state.isCoffeeGround = grindResult;
     const brewResult = await brewCoffee();
-    console.log(brewResult);
+    state.isCoffeeBrewed = brewResult;
     drinkCoffee();
   } catch(error) {
-    console.log(error);
+    logger.error(error);
   }
 }
 
