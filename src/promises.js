@@ -1,66 +1,81 @@
-const log = console.log;
-
-// Try changing this to `false` to see how async errors are handled
-const coffeeGrinderWorks = true;
+const logger = require('./lib/logger');
+const state = require('./state');
 
 function boilWater() {
+  const time = 2000; // 2 seconds
+
   return new Promise((resolve, reject) => {
+    if (state.isWaterBoiled) {
+      reject(false);
+    }
+
     // Promise is PENDING
-    log("Step 1: Boil water");
+    logger.pending("Step 1: Boil water");
+
     setTimeout(() => {
-      console.log("Done boiling");
-      resolve("HOT WATER"); // Promise is RESOLVED
-    }, 2000); // resolve after 2 seconds
-  })
+      logger.success("Done boiling");
+      resolve(true); // Promise is RESOLVED
+    }, time);
+  });
 }
 
 function grind() {
-  log("Step 2: Grind coffee");
+  const time = 2000; // 2 seconds
+
   return new Promise((resolve, reject) => {
+    if (state.isCoffeeGround) {
+      reject(false);
+    }
+
     // Promise is PENDING
-    if (coffeeGrinderWorks) {
+    logger.pending("Step 2: Grind coffee");
+
+    if (state.coffeeGrinderWorks) {
       setTimeout(() => {
-        console.log("Ground coffee");
-        resolve("COFFEE GRINDS"); // Promise is RESOLVED
-      }, 2000); // resolve after 2 seconds
+        logger.success("Ground coffee");
+        resolve(true); // Promise is RESOLVED
+      }, time);
     } else {
-      reject("Coffee grinder is broken!"); // Promise is REJECTED
+      reject(false); // Promise is REJECTED
     }
   });
 }
 
 function brew(groundCoffee) {
-  log("Step 3: Brew coffee");
+  const time = 4000; // 4 seconds
+
   return new Promise((resolve, reject) => {
+    logger.pending("Step 3: Brew coffee");
+
     // Promise is PENDING
     setTimeout(() => {
-      console.log(`Brewed coffee with ${groundCoffee}`);
-      resolve("COFFEE"); // Promise is RESOLVED
-    }, 4000); // resolve after 2 seconds
+      logger.success(`Brewed coffee with ${groundCoffee}`);
+      resolve(true); // Promise is RESOLVED
+    }, time); // resolve after 2 seconds
   });
 }
 
 function drink(coffee) {
-  log(`Step 4: Drinking ${coffee}. Delicious!`);
+  logger.success(`Step 4: Drinking ${coffee}. Delicious!`);
 }
 
 function makeCoffeeWithPromise() {
   boilWater()
-    .then(hotWater => {
-      console.log(hotWater);
+    .then(result => {
+      state.isWaterBoiled = result;
       return grind();
     })
-    .then(grounds => {
-      return brew(grounds);
+    .then(result => {
+      state.isCoffeeGround = result;
+      return brew();
     })
-    .then(coffee => {
-      return drink(coffee);
+    .then(result => {
+      state.isCoffeeBrewed = result;
+      return drink();
     })
     .catch(error => {
-      console.error(error);
+      logger.error(error);
     });
 }
 
 makeCoffeeWithPromise();
-
-console.log("Sync code done!");

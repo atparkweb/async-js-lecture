@@ -1,30 +1,25 @@
 const logger = require('./lib/logger');
-const { WAIT, OK, ERROR } = logger.statuses
-
-const Store = require('./lib/store');
-const state = new Store();
+const state = require('./lib/state');
 
 function boilWater(onComplete) {
   const time = 2000; // 2 seconds
 
-  logger.log("Step 1: Boil water", WAIT);
+  logger.pending("Step 1: Boil water");
   setTimeout(() => {
-    // this will run after 2 seconds
-    logger.log("Done boiling", OK);
+    logger.success("Done boiling");
     onComplete();
-    //state.isWaterBoiled = true;
+    state.isWaterBoiled = true;
   }, time);
 }
 
 function grindCoffee(onComplete) {
-  logger.log("Step 2: Grind coffee", WAIT);
+  logger.pending("Step 2: Grind coffee");
 
   if (state.coffeeGrinderWorks) {
     const time = 1000; // 1 second
 
     setTimeout(() => {
-      // This will run after 1 second
-      logger.log("Ground coffee", OK);
+      logger.success("Ground coffee");
       onComplete();
       state.isCoffeeGround = true;
     }, time);
@@ -40,50 +35,48 @@ function brewCoffee(onComplete) {
 
   const time = 4000; // 4 seconds
 
-  logger.log("Step 3: Brew coffee", WAIT);
+  logger.pending("Step 3: Brew coffee");
 
   setTimeout(() => {
-    // This will run after 4 seconds
-    logger.log("Brewed with ground coffee", OK);
+    logger.success("Brewed with ground coffee");
     onComplete();
     state.isCoffeeBrewed = true;
   }, time);
 }
 
 function drinkCoffee() {
-  logger.log("Step 4: Drinking coffee. Delicious!", OK);
+  logger.success("Step 4: Drinking coffee. Delicious!");
 }
 
-
-/**
- * This is callback hell. 
- * Nested callbacks control the order of async code, but it's ugly.
- * Handling errors is kind of a mess
- */
- function start() {
-    boilWater(() => {
-      try {
-        grindCoffee(() => {
-          try {
-            brewCoffee(() => {
-              try {
-                drinkCoffee();
-              } catch (err) {
-                handleError(err);
-              }
-            });
-          } catch (err) {
-            handleError(err);
-          }
-        });
-      } catch (err) {
-        handleError(err);
-      }
-    });
+function start() {
+  /*
+  * This is callback hell.
+  * Nested callbacks control the order of async code, but it's ugly.
+  * Handling errors is kind of a mess.
+  */
+  boilWater(() => {
+    try {
+      grindCoffee(() => {
+        try {
+          brewCoffee(() => {
+            try {
+              drinkCoffee();
+            } catch (err) {
+              handleError(err);
+            }
+          });
+        } catch (err) {
+          handleError(err);
+        }
+      });
+    } catch (err) {
+      handleError(err);
+    }
+  });
 }
 
 function handleError(err) {
-  logger.log(err.message, ERROR);
+  logger.error(err.message);
 }
 
 start();
