@@ -1,12 +1,8 @@
 const logger = require('./lib/logger');
 const { WAIT, OK, ERROR } = logger.statuses
 
-const state = {
-  coffeeGrinderWorks: true,
-  isWaterBoiled: false,
-  isCoffeeGround: false,
-  isCoffeeBrewed: false
-};
+const Store = require('./lib/store');
+const state = new Store();
 
 function boilWater(onComplete) {
   const time = 2000; // 2 seconds
