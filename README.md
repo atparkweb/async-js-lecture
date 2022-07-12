@@ -1,10 +1,10 @@
-# Async & Promises
+# Async Coffee Simulator ☕ 
 
-This is some code that uses different asynchronous forms of JavaScript:
+This project is part of a workshop that introduces asynchronous JavaScript to beginners.
 
-- Callbacks: `callbacks.js`
-- Promises: `promises.js`
-- Await: `await.js`
+- [Callbacks](./src/callbacks.js)
+- [Promises](./src/promises.js)
+- [Await](await.js)
 
 ## Running Scripts:
 
