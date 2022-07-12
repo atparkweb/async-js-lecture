@@ -1,5 +1,5 @@
 const logger = require('./lib/logger');
-const state = require('./lib/state');
+const state = require('./state');
 
 function boilWater(onComplete) {
   const time = 2000; // 2 seconds
