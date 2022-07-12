@@ -7,7 +7,7 @@ const initialState = {
 
 class Store {
   constructor() {
-    this.state = Object.freeze({ ...initialState });
+    this.state = { ...initialState };
   }
 
   breakCoffeeGrinder() {
