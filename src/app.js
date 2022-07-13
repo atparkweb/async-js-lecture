@@ -1,19 +1,20 @@
 const logger = require('./logger');
 const state = require('./state');
 
-function boilWater(onComplete) {
-  const time = 2000; // 2 seconds
+const boilTime = 2000;  // 2 seconds
+const grindTime = 1000; // 1 second
+const brewTime = 4000;  // 4 seconds
 
+function boilWater(onComplete, time) {
   logger.pending("Step 1: Boil water");
+
   setTimeout(() => {
     logger.success("Done boiling");
     onComplete();
     state.isWaterBoiled = true;
   }, time);
 }
-function boilWaterPromise() {
-  const time = 2000; // 2 seconds
-
+function boilWaterPromise(time) {
   return new Promise((resolve, reject) => {
     if (state.isWaterBoiled) {
       reject(false);
@@ -30,12 +31,10 @@ function boilWaterPromise() {
 }
 
 
-function grindCoffee(onComplete) {
+function grindCoffee(onComplete, time) {
   logger.pending("Step 2: Grind coffee");
 
   if (state.coffeeGrinderWorks) {
-    const time = 1000; // 1 second
-
     setTimeout(() => {
       logger.success("Ground coffee");
       onComplete();
@@ -45,9 +44,7 @@ function grindCoffee(onComplete) {
     throw new Error("Coffee grinder is broken!");
   }
 }
-function grindCoffeePromise() {
-  const time = 2000; // 2 seconds
-
+function grindCoffeePromise(time) {
   return new Promise((resolve, reject) => {
     if (state.isCoffeeGround) {
       reject(false);
@@ -68,12 +65,10 @@ function grindCoffeePromise() {
 }
 
 
-function brewCoffee(onComplete) {
+function brewCoffee(onComplete, time) {
   if (!state.isCoffeeGround && !state.isWaterBoiled) {
     throw new Error("Can't brew coffee without grounds and hot water.")
   }
-
-  const time = 4000; // 4 seconds
 
   logger.pending("Step 3: Brew coffee");
 
@@ -83,9 +78,7 @@ function brewCoffee(onComplete) {
     state.isCoffeeBrewed = true;
   }, time);
 }
-function brewCoffeePromise(groundCoffee) {
-  const time = 4000; // 4 seconds
-
+function brewCoffeePromise(groundCoffee, time=1000) {
   return new Promise((resolve, reject) => {
     logger.pending("Step 3: Brew coffee");
 
@@ -103,13 +96,17 @@ function drinkCoffee() {
 }
 
 function makeCoffeeWithCallbacks() {
+  /*
+  * Welcome to Callback Hell!
+  * Nested callbacks control the order of async code, but it's ugly.
+  * Error handling is kind of a mess too.
+  *
+  * The code below is a pain to read and maintain. Does it actually work? Who knows?
+  */
+
   console.log('Making coffee with callbacks...');
   logger.divider(30);
-  /*
-  * This is callback hell.
-  * Nested callbacks control the order of async code, but it's ugly.
-  * Handling errors is kind of a mess.
-  */
+
   boilWater(() => {
     const handleError = (err) => {
       logger.error(err.message);
@@ -124,19 +121,27 @@ function makeCoffeeWithCallbacks() {
             } catch (err) {
               handleError(err);
             }
-          });
+          }, brewTime);
         } catch (err) {
           handleError(err);
         }
-      });
+      }, grindTime);
     } catch (err) {
       handleError(err);
     }
-  });
+  }, boilTime);
 }
+
 function makeCoffeeWithPromises() {
+  /*
+   * This looks way better than the nested callback version!
+   * It's also easier to handle errors (just catch it at the end)
+   * We've escaped callback hell and now we're in...
+   * Promise Purgatory
+   */
   console.log('Making coffee with promises...');
   logger.divider(30);
+
   boilWaterPromise()
     .then(result => {
       state.isWaterBoiled = result;
@@ -155,12 +160,17 @@ function makeCoffeeWithPromises() {
     });
 }
 
-/**
- * This version uses async/await to make async code look synchronous
- */
 async function makeCoffeeWithAsyncAwait() {
+  /*
+   * This version uses async/await to make async code look synchronous.
+   * This looks even nicer and more concise compared to promises.
+   * Easier to read and maintain.
+   * try/catch is back, but it works like the synchronous code that we all
+   * know and love.
+   */
   console.log('Making coffee with async/await...');
   logger.divider(30);
+
   try {
     const boilResult = await boilWaterPromise();
     state.isWaterBoiled = boilResult;
@@ -191,4 +201,4 @@ function start(label) {
   }
 }
 
-start('await');
+start('callbacks');
