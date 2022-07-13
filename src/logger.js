@@ -14,6 +14,10 @@ class Logger {
   log(message, icon) {
     console.log(`${icon} ${message}`);
   }
+
+  divider(length=10) {
+    console.log("=".repeat(length));
+  }
 }
 
 module.exports = new Logger();

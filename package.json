@@ -2,11 +2,9 @@
   "name": "promises_async",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "callbacks": "node ./src/callbacks.js",
-    "promises": "node ./src/promises.js",
-    "await": "node ./src/await.js"
+    "start": "node ./src/app.js"
   },
   "author": "Andrew Park",
   "license": "ISC"
